@@ -1,0 +1,1019 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="VoR — Voice of Reddit. Skip the Amazon reviews. Get what Reddit really thinks." />
+  <title>VoR — Voice of Reddit</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,800;0,9..144,900;1,9..144,400;1,9..144,600&family=JetBrains+Mono:wght@400;500;700&family=Geist:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --orange: #FF4500;
+      --orange-dark: #D63900;
+      --orange-light: #FFE4D6;
+      --ink: #0A0A0A;
+      --ink-soft: #1F1F20;
+      --paper: #FBFAF6;
+      --paper-warm: #F4F2EA;
+      --muted: #717074;
+      --line: #E8E5DC;
+      --line-strong: #D4D0C4;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Geist', -apple-system, sans-serif;
+      background: var(--paper);
+      color: var(--ink);
+      line-height: 1.5;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      font-feature-settings: "ss01", "cv11";
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background-image:
+        radial-gradient(circle at 20% 10%, rgba(255, 69, 0, 0.06), transparent 40%),
+        radial-gradient(circle at 80% 90%, rgba(255, 69, 0, 0.04), transparent 40%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' /%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+      opacity: 0.4;
+      pointer-events: none;
+      z-index: 0;
+      mix-blend-mode: multiply;
+    }
+
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      background: rgba(251, 250, 246, 0.75);
+      border-bottom: 1px solid var(--line);
+      z-index: 100;
+      padding: 18px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: 'Fraunces', serif;
+      font-weight: 900;
+      font-size: 22px;
+      color: var(--ink);
+      letter-spacing: -0.03em;
+    }
+
+    .logo-mark {
+      width: 32px;
+      height: 32px;
+      background: var(--ink);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .logo-mark::after {
+      content: "";
+      width: 10px;
+      height: 10px;
+      background: var(--orange);
+      border-radius: 50%;
+      box-shadow: 0 0 12px rgba(255, 69, 0, 0.6);
+      animation: pulse 2.5s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.4); opacity: 0.6; }
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      font-family: 'Geist', sans-serif;
+    }
+
+    .nav-link {
+      color: var(--muted);
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 14px;
+      transition: color 0.25s;
+    }
+
+    .nav-link:hover {
+      color: var(--orange);
+    }
+
+    .nav-cta {
+      background: var(--ink);
+      color: var(--paper);
+      padding: 10px 18px;
+      border-radius: 100px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 13px;
+      transition: all 0.25s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .nav-cta:hover {
+      background: var(--orange);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 24px -6px rgba(255, 69, 0, 0.5);
+    }
+
+    .hero {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 140px 40px 60px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-inner {
+      max-width: 900px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--muted);
+      margin-bottom: 36px;
+      padding: 8px 16px;
+      background: rgba(255, 255, 255, 0.6);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid var(--line);
+      border-radius: 100px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      animation: fade-up 0.8s cubic-bezier(0.4, 0, 0.2, 1) both;
+    }
+
+    .eyebrow-dot {
+      width: 6px;
+      height: 6px;
+      background: #22c55e;
+      border-radius: 50%;
+      box-shadow: 0 0 8px #22c55e;
+      animation: pulse 2s infinite;
+    }
+
+    h1 {
+      font-family: 'Fraunces', serif;
+      font-size: clamp(56px, 10vw, 128px);
+      font-weight: 900;
+      line-height: 0.95;
+      letter-spacing: -0.045em;
+      margin-bottom: 36px;
+      color: var(--ink);
+      animation: fade-up 1s cubic-bezier(0.4, 0, 0.2, 1) 0.2s both;
+    }
+
+    h1 .italic {
+      font-style: italic;
+      font-weight: 400;
+      color: var(--muted);
+    }
+
+    h1 .orange {
+      color: var(--orange);
+      position: relative;
+      display: inline-block;
+    }
+
+    h1 .orange::after {
+      content: "";
+      position: absolute;
+      left: -4px;
+      right: -4px;
+      bottom: 12px;
+      height: 14px;
+      background: rgba(255, 69, 0, 0.2);
+      z-index: -1;
+      border-radius: 4px;
+      transform: skewX(-12deg);
+    }
+
+    @keyframes fade-up {
+      from {
+        opacity: 0;
+        transform: translateY(32px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .lead {
+      font-family: 'Geist', sans-serif;
+      font-size: clamp(18px, 2vw, 22px);
+      color: var(--muted);
+      max-width: 640px;
+      margin: 0 auto 48px;
+      line-height: 1.55;
+      font-weight: 400;
+      animation: fade-up 1s cubic-bezier(0.4, 0, 0.2, 1) 0.4s both;
+    }
+
+    .lead strong {
+      color: var(--ink);
+      font-weight: 600;
+    }
+
+    .lead mark {
+      background: linear-gradient(180deg, transparent 60%, rgba(255, 69, 0, 0.25) 60%);
+      padding: 0 3px;
+      color: var(--ink);
+      font-weight: 600;
+    }
+
+    .cta-row {
+      display: flex;
+      gap: 14px;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+      animation: fade-up 1s cubic-bezier(0.4, 0, 0.2, 1) 0.6s both;
+    }
+
+    .cta-primary {
+      background: var(--ink);
+      color: var(--paper);
+      padding: 18px 32px;
+      border-radius: 100px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 15px;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      border: none;
+      cursor: pointer;
+      font-family: 'Geist', sans-serif;
+    }
+
+    .cta-primary:hover {
+      background: var(--orange);
+      transform: translateY(-3px);
+      box-shadow: 0 20px 40px -10px rgba(255, 69, 0, 0.5);
+    }
+
+    .cta-primary .arrow {
+      transition: transform 0.3s;
+    }
+
+    .cta-primary:hover .arrow {
+      transform: translateX(4px);
+    }
+
+    .cta-ghost {
+      color: var(--muted);
+      padding: 18px 24px;
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 15px;
+      border-radius: 100px;
+      transition: all 0.25s;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .cta-ghost:hover {
+      color: var(--ink);
+      background: rgba(255, 255, 255, 0.5);
+    }
+
+    .bento {
+      max-width: 1200px;
+      margin: 80px auto 40px;
+      padding: 0 40px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .bento-label {
+      display: block;
+      text-align: center;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--orange);
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+
+    .bento-title {
+      text-align: center;
+      font-family: 'Fraunces', serif;
+      font-size: clamp(36px, 6vw, 64px);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1;
+      margin-bottom: 72px;
+      color: var(--ink);
+    }
+
+    .bento-title .italic {
+      font-style: italic;
+      font-weight: 400;
+      color: var(--muted);
+    }
+
+    .bento-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      grid-auto-rows: minmax(180px, auto);
+      gap: 16px;
+    }
+
+    .bento-card {
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      padding: 32px;
+      transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+      cursor: default;
+    }
+
+    .bento-card:hover {
+      transform: translateY(-6px);
+      border-color: var(--line-strong);
+      box-shadow: 0 40px 80px -30px rgba(10, 10, 10, 0.15);
+    }
+
+    .bento-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, transparent 40%, rgba(255, 69, 0, 0.04) 100%);
+      opacity: 0;
+      transition: opacity 0.5s;
+      pointer-events: none;
+    }
+
+    .bento-card:hover::before {
+      opacity: 1;
+    }
+
+    .card-kicker {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--orange);
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+
+    .card-title {
+      font-family: 'Fraunces', serif;
+      font-size: 26px;
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -0.025em;
+      margin-bottom: 12px;
+      color: var(--ink);
+    }
+
+    .card-title .italic {
+      font-style: italic;
+      font-weight: 400;
+    }
+
+    .card-desc {
+      font-size: 15px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .bento-card.span-3 { grid-column: span 3; }
+    .bento-card.span-2 { grid-column: span 2; }
+    .bento-card.span-4 { grid-column: span 4; }
+    .bento-card.span-6 { grid-column: span 6; }
+
+    .bento-card.featured {
+      background: var(--ink);
+      color: var(--paper);
+      border-color: var(--ink);
+      position: relative;
+    }
+
+    .bento-card.featured .card-kicker { color: var(--orange); }
+    .bento-card.featured .card-title { color: var(--paper); }
+    .bento-card.featured .card-desc { color: rgba(251, 250, 246, 0.7); }
+
+    .bento-card.featured::before {
+      background: linear-gradient(135deg, transparent 40%, rgba(255, 69, 0, 0.15) 100%);
+    }
+
+    .featured-orb {
+      position: absolute;
+      top: 30px;
+      right: 30px;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: radial-gradient(circle, var(--orange), transparent 70%);
+      filter: blur(8px);
+      animation: float 4s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-12px); }
+    }
+
+    .stat-display {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      margin-top: 20px;
+    }
+
+    .stat-big {
+      font-family: 'Fraunces', serif;
+      font-size: 72px;
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      color: var(--orange);
+      line-height: 1;
+    }
+
+    .stat-unit {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    .example-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .example-chip {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      padding: 10px 14px;
+      background: rgba(10, 10, 10, 0.04);
+      border-radius: 10px;
+      color: var(--ink-soft);
+      border: 1px solid transparent;
+      transition: all 0.25s;
+      cursor: pointer;
+    }
+
+    .example-chip::before {
+      content: "→";
+      color: var(--orange);
+      margin-right: 8px;
+      font-weight: bold;
+    }
+
+    .example-chip:hover {
+      background: white;
+      border-color: var(--orange);
+      transform: translateX(4px);
+    }
+
+    .how-strip {
+      max-width: 1200px;
+      margin: 120px auto;
+      padding: 0 40px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .how-strip-inner {
+      background: var(--ink);
+      color: var(--paper);
+      border-radius: 32px;
+      padding: 80px 60px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .how-strip-inner::before {
+      content: "";
+      position: absolute;
+      top: -50%;
+      right: -20%;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(255, 69, 0, 0.3), transparent 60%);
+      filter: blur(40px);
+      pointer-events: none;
+    }
+
+    .how-strip .label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--orange);
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+      display: block;
+    }
+
+    .how-strip h2 {
+      font-family: 'Fraunces', serif;
+      font-size: clamp(36px, 5vw, 54px);
+      font-weight: 800;
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+      margin-bottom: 48px;
+      max-width: 720px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .how-strip h2 .italic {
+      font-style: italic;
+      font-weight: 400;
+      color: rgba(251, 250, 246, 0.6);
+    }
+
+    .how-steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .how-step {
+      padding: 28px;
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      transition: all 0.4s;
+    }
+
+    .how-step:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(255, 69, 0, 0.5);
+      transform: translateY(-4px);
+    }
+
+    .how-step-num {
+      font-family: 'Fraunces', serif;
+      font-size: 44px;
+      font-weight: 900;
+      color: var(--orange);
+      line-height: 1;
+      margin-bottom: 16px;
+      letter-spacing: -0.03em;
+    }
+
+    .how-step h3 {
+      font-family: 'Geist', sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 10px;
+      color: var(--paper);
+      letter-spacing: -0.01em;
+    }
+
+    .how-step p {
+      font-size: 14px;
+      color: rgba(251, 250, 246, 0.65);
+      line-height: 1.6;
+    }
+
+    .disclaimer {
+      max-width: 900px;
+      margin: 0 auto 80px;
+      padding: 28px 40px;
+      background: rgba(255, 255, 255, 0.6);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      text-align: center;
+      line-height: 1.7;
+      color: var(--muted);
+      position: relative;
+      z-index: 1;
+    }
+
+    .disclaimer strong {
+      color: var(--orange);
+      font-weight: 700;
+    }
+
+    footer {
+      background: var(--ink);
+      color: var(--paper);
+      padding: 100px 40px 60px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    footer::before {
+      content: "";
+      position: absolute;
+      top: -200px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 800px;
+      height: 400px;
+      background: radial-gradient(ellipse, rgba(255, 69, 0, 0.2), transparent 70%);
+      filter: blur(60px);
+      pointer-events: none;
+    }
+
+    .footer-inner {
+      max-width: 800px;
+      margin: 0 auto;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .footer-kicker {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--orange);
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+    }
+
+    .footer-name {
+      font-family: 'Fraunces', serif;
+      font-size: clamp(48px, 7vw, 84px);
+      font-weight: 900;
+      line-height: 1;
+      letter-spacing: -0.04em;
+      margin-bottom: 40px;
+      color: var(--paper);
+    }
+
+    .footer-name .orange {
+      color: var(--orange);
+      font-style: italic;
+      font-weight: 400;
+    }
+
+    .footer-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--orange);
+      color: var(--paper);
+      padding: 18px 36px;
+      border-radius: 100px;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 16px;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      margin-bottom: 48px;
+      box-shadow: 0 20px 40px -10px rgba(255, 69, 0, 0.4);
+      font-family: 'Geist', sans-serif;
+    }
+
+    .footer-cta:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 30px 50px -10px rgba(255, 69, 0, 0.6);
+      background: #FF5C1A;
+    }
+
+    .footer-meta {
+      font-size: 14px;
+      color: rgba(251, 250, 246, 0.5);
+      line-height: 1.8;
+      font-family: 'Geist', sans-serif;
+    }
+
+    .footer-meta a {
+      color: rgba(251, 250, 246, 0.75);
+      text-decoration: none;
+      border-bottom: 1px dashed rgba(251, 250, 246, 0.3);
+      transition: all 0.25s;
+    }
+
+    .footer-meta a:hover {
+      color: var(--orange);
+      border-color: var(--orange);
+    }
+
+    .footer-bottom {
+      margin-top: 60px;
+      padding-top: 32px;
+      border-top: 1px solid rgba(251, 250, 246, 0.1);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: rgba(251, 250, 246, 0.3);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    @media (max-width: 900px) {
+      nav { padding: 14px 20px; }
+      .nav-right { gap: 16px; }
+      .nav-link { display: none; }
+
+      .hero { padding: 110px 20px 40px; }
+
+      .bento { padding: 0 20px; margin: 60px auto 40px; }
+      .bento-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+      .bento-card.span-3,
+      .bento-card.span-2,
+      .bento-card.span-4,
+      .bento-card.span-6 { grid-column: span 2; }
+      .bento-card { padding: 24px; }
+      .card-title { font-size: 22px; }
+      .stat-big { font-size: 56px; }
+
+      .how-strip { margin: 80px auto; padding: 0 20px; }
+      .how-strip-inner { padding: 48px 28px; border-radius: 24px; }
+      .how-steps { grid-template-columns: 1fr; gap: 16px; }
+
+      .disclaimer { margin: 0 20px 60px; padding: 22px 24px; }
+
+      footer { padding: 72px 20px 48px; }
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+      .bento-card,
+      .how-step {
+        animation: fade-up-reveal 0.8s cubic-bezier(0.4, 0, 0.2, 1) both;
+        animation-timeline: view();
+        animation-range: entry 0% cover 30%;
+      }
+    }
+
+    @keyframes fade-up-reveal {
+      from {
+        opacity: 0;
+        transform: translateY(40px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="nav-logo">
+      <div class="logo-mark"></div>
+      VoR
+    </div>
+    <div class="nav-right">
+      <a class="nav-link" href="#how">How it works</a>
+      <a class="nav-cta" href="https://www.linkedin.com/in/keerthana19982509/" target="_blank">
+        Built by Keerthana →
+      </a>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="hero-inner">
+      <div class="eyebrow">
+        <span class="eyebrow-dot"></span>
+        Voice of Reddit · Live
+      </div>
+
+      <h1>
+        Reddit <span class="italic">knows.</span><br>
+        VoR <span class="orange">tells you.</span>
+      </h1>
+
+      <p class="lead">
+        You were going to add <strong>"reddit"</strong> to your Google search anyway. <mark>VoR does it faster</mark> — and makes it make sense.
+      </p>
+
+      <div class="cta-row">
+        <button class="cta-primary" onclick="openVoRChat()">
+          Ask VoR anything
+          <span class="arrow">→</span>
+        </button>
+        <a class="cta-ghost" href="#how">How it works ↓</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="bento">
+    <span class="bento-label">What makes VoR different</span>
+    <h2 class="bento-title">
+      Real opinions. <span class="italic">Zero fluff.</span>
+    </h2>
+
+    <div class="bento-grid">
+
+      <div class="bento-card featured span-3">
+        <div class="featured-orb"></div>
+        <div class="card-kicker">The Edge</div>
+        <h3 class="card-title">
+          Not a chatbot.<br>
+          A <span class="italic">research analyst.</span>
+        </h3>
+        <p class="card-desc">Structured verdicts with grades, themes, and sources. Sharp takes you can actually screenshot and share.</p>
+      </div>
+
+      <div class="bento-card span-3">
+        <div class="card-kicker">Time to Answer</div>
+        <h3 class="card-title">Blink and<br>you'll miss it.</h3>
+        <div class="stat-display">
+          <div class="stat-big">30s</div>
+          <div class="stat-unit">avg. response</div>
+        </div>
+      </div>
+
+      <div class="bento-card span-2">
+        <div class="card-kicker">Depth</div>
+        <div class="stat-display">
+          <div class="stat-big">100+</div>
+        </div>
+        <p class="card-desc" style="margin-top: 8px;">threads scanned per query</p>
+      </div>
+
+      <div class="bento-card span-4">
+        <div class="card-kicker">Try asking</div>
+        <h3 class="card-title"><span class="italic">Anything</span> people research on Reddit.</h3>
+        <div class="example-list">
+          <div class="example-chip" onclick="openVoRChat()">iPhone or Samsung — which one to buy in 2026?</div>
+          <div class="example-chip" onclick="openVoRChat()">Is Dyson actually worth the hype?</div>
+          <div class="example-chip" onclick="openVoRChat()">Which AI coding tool is actually good — Cursor, Copilot, or Claude?</div>
+          <div class="example-chip" onclick="openVoRChat()">Most visited places in Seattle in summer?</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="how-strip" id="how">
+    <div class="how-strip-inner">
+      <span class="label">How it works</span>
+      <h2>Three steps. <span class="italic">One sharp answer.</span><br>No fluff in between.</h2>
+
+      <div class="how-steps">
+        <div class="how-step">
+          <div class="how-step-num">01</div>
+          <h3>Ask anything</h3>
+          <p>Type a brand, product, city, career, or comparison. From "Tesla Model Y" to "Seattle vs Chicago" — VoR takes it.</p>
+        </div>
+        <div class="how-step">
+          <div class="how-step-num">02</div>
+          <h3>VoR scans Reddit</h3>
+          <p>Pulls real discussions from the most relevant subreddits. Analyzes sentiment. Spots the patterns you'd miss.</p>
+        </div>
+        <div class="how-step">
+          <div class="how-step-num">03</div>
+          <h3>Get the answer</h3>
+          <p>A quick take, a grade, and the honest bottom line. Want the full Report Card? Just ask "tell me more".</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="disclaimer">
+    <strong>// heads up</strong> &nbsp; VoR reflects Reddit's crowd — younger, tech-savvy, urban, and way more vocal about what they hate than what they love. Treat insights as one sharp perspective, not the whole truth.
+  </div>
+
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-kicker">— Built by —</div>
+      <h2 class="footer-name">
+        Keerthana <span class="orange">Bejgama</span>
+      </h2>
+      <a class="footer-cta" href="https://www.linkedin.com/in/keerthana19982509/" target="_blank">
+        Let's connect on LinkedIn →
+      </a>
+      <p class="footer-meta">
+        Business Data Analyst · turning curiosity into working tools<br><br>
+        Powered by <a href="https://anthropic.com" target="_blank">Claude</a> · <a href="https://tavily.com" target="_blank">Tavily</a> · <a href="https://airia.ai" target="_blank">Airia</a>
+      </p>
+      <div class="footer-bottom">
+        VoR · Voice of Reddit · 2026
+      </div>
+    </div>
+  </footer>
+
+  <div id="root"></div>
+
+  <script type="module">
+    import AiriaChat from "https://embed-api.airia.ai/get-chat-embed.js"
+    AiriaChat.init({
+      pipelineId: "01685437-ec13-4f88-a7c1-5e3f4989861d",
+      apiKey: "ak-NjUwODk3NTE0fDE3NzY2MzkyNzM1MzJ8dGktVUdWeWMyOXVZV3d0VDNCbGJpQlNaV2RwYzNSeVlYUnBiMjR0UVdseWFXRWdSbkpsWlY4NFpERXdPREJrT0MwMk9ERXlMVFF6T1dVdFlqTTVNaTA1T0RobVptRmlNamhpWTJRPXwxfDMzODg2NTU2NSAg",
+      apiUrl: "https://embed-api.airia.ai",
+      greeting: "Hey! 👋 I'm VoR — ask me about any brand, product, city, or comparison. I'll keep it short unless you want more.",
+      imagePath: "",
+      imageSize: "small",
+      imageBgColor: "#FF4500",
+      autoOpen: true
+    })
+  </script>
+
+  <script>
+  function openVoRChat() {
+    // Step 1: Always scroll to the top so user can see the chat bubble
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    
+    // Step 2: Try to auto-click the Airia chat bubble (multiple attempts)
+    setTimeout(() => {
+      // Look in all possible places Airia might render
+      const tryClick = () => {
+        // Try everything we can think of
+        const candidates = document.querySelectorAll('button, [role="button"], div[class*="chat"], div[class*="launcher"], div[class*="airia"], iframe');
+        for (const el of candidates) {
+          const rect = el.getBoundingClientRect();
+          // If element is in bottom-right area (where chat bubble lives)
+          if (rect.right > window.innerWidth - 150 && rect.bottom > window.innerHeight - 150) {
+            try {
+              el.click();
+              return true;
+            } catch (e) {}
+          }
+        }
+        return false;
+      };
+      tryClick();
+    }, 500);
+    
+    // Step 3: Show a pulse so user knows where the chat is
+    const pulse = document.createElement('div');
+    pulse.style.cssText = `
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      background: rgba(255, 69, 0, 0.35);
+      z-index: 9998;
+      pointer-events: none;
+      animation: chat-ping 1.2s ease-out 2;
+    `;
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes chat-ping {
+        0% { transform: scale(0.5); opacity: 1; }
+        100% { transform: scale(2.5); opacity: 0; }
+      }
+    `;
+    if (!document.head.querySelector('style[data-pulse]')) {
+      style.setAttribute('data-pulse', 'true');
+      document.head.appendChild(style);
+    }
+    document.body.appendChild(pulse);
+    setTimeout(() => pulse.remove(), 2400);
+  }
+</script>
+</body>
+</html>
